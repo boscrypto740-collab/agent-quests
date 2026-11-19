@@ -1,0 +1,38 @@
+name: CI
+
+permissions: {}
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Foundry project
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
+        with:
+          persist-credentials: false
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+
+      - name: Show Forge version
+        run: forge --version
+
+      # No `forge fmt --check` step on purpose: the deployed source is frozen
+      # exactly as verified on BscScan (formatting changes would alter the
+      # metadata hash), and the contract source is intentionally not
+      # forge-fmt-clean. Do not add the check back without re-verifying.
+
+      - name: Run Forge build
+        run: forge build --sizes
+        working-directory: contracts
+
+      - name: Run Forge tests
+        run: forge test -vvv
+        working-directory: contracts
