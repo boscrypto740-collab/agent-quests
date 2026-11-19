@@ -1,0 +1,9 @@
+[profile.default]
+src = "src"
+out = "out"
+libs = ["lib"]
+solc = "0.8.24"
+# Optimize for deployment size: the deploy budget is ~0.003 BNB, so bytecode
+# bytes (200 gas each) dominate. Runtime gas stays low either way.
+optimizer = true
+optimizer_runs = 1
